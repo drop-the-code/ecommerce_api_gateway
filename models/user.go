@@ -1,12 +1,14 @@
 package models
 
 type User struct {
+	Id       string
 	Name     string
 	Email    string
 	Cpf      string
-	Endereco string
-	Cartao   string
+	Address  string
+	Card     Card
 	Role     string
+	Password string
 }
 
 // string name = 1;

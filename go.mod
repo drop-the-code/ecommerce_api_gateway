@@ -7,4 +7,6 @@ require (
 	github.com/gofiber/fiber/v2 v2.9.0 // indirect
 	github.com/pelletier/go-toml v1.9.0 // indirect
 	golang.org/x/sys v0.0.0-20210507161434-a76c4d0a0096 // indirect
+	google.golang.org/grpc v1.38.0
+	google.golang.org/protobuf v1.25.0 // indirect
 )

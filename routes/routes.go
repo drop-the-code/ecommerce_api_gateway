@@ -1,36 +1,68 @@
 package routes
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/vinny1892/ecommerce_api_gateway/models"
+	pb "github.com/vinny1892/ecommerce_api_gateway/protos"
+	"google.golang.org/grpc"
 )
 
 func usersAll(c *fiber.Ctx) error {
-	users := []models.User{
-		{
-			Name:     "Vinicius",
-			Email:    "vinny1892@gmail.com",
-			Cpf:      "12341234",
-			Endereco: "Seila",
-			Cartao:   "awefiawoefç",
-			Role:     "funcionario",
-		},
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	if err != nil {
+		c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "servidor fora do ar",
+		})
 	}
-	seila := models.User{}
-	users = append(users, seila)
-	return c.JSON(users)
+	defer conn.Close()
+	client := pb.NewUserServiceClient(conn)
+	req := &pb.Empty{}
+	res, err := client.SelectAll(context.Background(), req)
+	if err != nil {
+		c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "conexão recusada com o servidor",
+		})
+	}
+	fmt.Println(res.Users)
+	return c.JSON(res.Users)
 }
 func user(c *fiber.Ctx) error {
-	fmt.Println(c.Query("seila"))
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	if err != nil {
+		c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "servidor fora do ar",
+		})
+	}
+	defer conn.Close()
+	client := pb.NewUserServiceClient(conn)
+	id := c.Params("id")
+	req := &pb.UserID{
+		Id: id,
+	}
+	res, err := client.SelectById(context.Background(), req)
+	if err != nil {
+		c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "conexão recusada com o servidor",
+		})
+	}
 	user := models.User{
-		Name:     "Vinicius",
-		Email:    "vinny1892@gmail.com",
-		Cpf:      "12341234",
-		Endereco: "Seila",
-		Cartao:   "awefiawoefç",
-		Role:     "funcionario",
+		Id:      res.Id,
+		Name:    res.Name,
+		Email:   res.Email,
+		Address: res.Address,
+		Card: models.Card{
+			Id:           res.Card.Id,
+			Name:         res.Card.Name,
+			Number:       res.Card.Number,
+			SecurityCode: res.Card.SecurityCode,
+			ValidThru:    res.Card.ValidThru,
+		},
+		Password: res.Password,
+		Role:     res.Role.String(),
+		Cpf:      res.Cpf,
 	}
 	return c.JSON(user)
 }
@@ -49,6 +81,7 @@ func userDelete(c *fiber.Ctx) error {
 }
 
 func SetupRoutes(app *fiber.App) {
+
 	app.Get("/user", usersAll)
 	app.Get("/user/:id", user)
 	app.Post("/user", userCreate)

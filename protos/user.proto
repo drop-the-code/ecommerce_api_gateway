@@ -1,0 +1,60 @@
+syntax = "proto3";
+// import "google/protobuf/empty.proto";
+option go_package = "github.com/vinny1892/ecommerce_api_gateway/protos/user";
+package EcommerceUser;
+// The greeting service definition.
+service UserService {
+  // Sends a greeting
+  rpc create (UserRequest) returns (User) {}
+  rpc update (UserRequest) returns (User) {}
+  rpc delete (UserID) returns (User) {}
+  rpc select_all (empty) returns (UserList) {}
+  rpc select_by_id (UserID) returns (User) {}
+
+}
+message empty{}
+
+message UserID {
+  string id = 1;
+}
+message UserName {
+  string name = 1;
+}
+
+
+enum Role {
+  cliente = 0;
+  funcionario = 1;
+}
+
+// The request message containing the user's name.
+message UserRequest {
+  User user = 1;
+}
+message User {
+  string id =1;
+  string name = 2;
+  string email = 3;
+  string cpf = 5;
+  Role role = 6;
+  string address = 7;
+  string password = 8;
+  Card card = 9;
+
+}
+message Card {
+  string id= 1;
+  string name= 2;
+  string securityCode =3;
+  string validThru =4;
+  string number = 5;
+
+}
+
+message UserList {
+  repeated User  users = 1;
+}
+
+message UserResponse{
+  UserList users =1 ;
+}
