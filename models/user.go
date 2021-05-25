@@ -9,6 +9,12 @@ type User struct {
 	Card     Card
 	Role     string
 	Password string
+	Token    string
+}
+
+type LoginRequest struct {
+	Email    string
+	Password string
 }
 
 // string name = 1;
