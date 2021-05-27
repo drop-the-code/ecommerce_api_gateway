@@ -1,58 +1,35 @@
 package routes
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v2"
+	UserController "github.com/vinny1892/ecommerce_api_gateway/controller"
 	"github.com/vinny1892/ecommerce_api_gateway/models"
-	pb "github.com/vinny1892/ecommerce_api_gateway/protos"
-	"google.golang.org/grpc"
 
 	jwt "github.com/form3tech-oss/jwt-go"
 )
 
 func usersAll(c *fiber.Ctx) error {
-
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "servidor fora do ar",
-		})
-	}
-	defer conn.Close()
-	client := pb.NewUserServiceClient(conn)
-	req := &pb.Empty{}
-	res, err := client.SelectAll(context.Background(), req)
+	users, err := UserController.ListAll()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "conexão recusada com o servidor",
 		})
 	}
-	fmt.Println(res.Users)
-	return c.JSON(res.Users)
+	fmt.Println(users)
+	return c.JSON(users)
 }
 
 func login(c *fiber.Ctx) error {
 	loginRequest := new(models.LoginRequest)
-
 	if err := c.BodyParser(loginRequest); err != nil {
 		return err
 	}
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "servidor fora do ar",
-		})
-	}
-	defer conn.Close()
-	client := pb.NewUserServiceClient(conn)
-	request := &pb.LoginRequest{Email: loginRequest.Email,
-		Password: loginRequest.Password}
-	res, err := client.SelectByEmail(context.Background(), request)
+	res, err := UserController.Login(loginRequest)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "conexão recusada com o servidor",
@@ -72,8 +49,7 @@ func login(c *fiber.Ctx) error {
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 	t, err := token.SignedString([]byte("secret"))
 	if err != nil {
-		log.Printf("token.SignedString: %v", err)
-		fmt.Println("DEU MERDA")
+		log.Printf("error: %v", err)
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 	user := models.User{
@@ -96,19 +72,8 @@ func login(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 func user(c *fiber.Ctx) error {
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
-	if err != nil {
-		c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "servidor fora do ar",
-		})
-	}
-	defer conn.Close()
-	client := pb.NewUserServiceClient(conn)
 	id := c.Params("id")
-	req := &pb.UserID{
-		Id: id,
-	}
-	res, err := client.SelectById(context.Background(), req)
+	res, err := UserController.SelectByID(id)
 	if err != nil {
 		c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "conexão recusada com o servidor",
@@ -134,27 +99,60 @@ func user(c *fiber.Ctx) error {
 }
 
 func userCreate(c *fiber.Ctx) error {
-	fmt.Println(string(c.Body()))
-	return c.SendString(string(c.Body()))
+	user := new(models.User)
+	if err := c.BodyParser(user); err != nil {
+		return err
+	}
+	res, err := UserController.CreateUser(user)
+	if err != nil {
+		c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "conexão recusada com o servidor",
+		})
+	}
+	return c.JSON(res)
+
 }
+
 func userUpdate(c *fiber.Ctx) error {
 	fmt.Println(c.Body())
 	return c.SendString("teste")
 }
 func userDelete(c *fiber.Ctx) error {
-	seila := string(c.Body())
-	fmt.Println(seila)
-	return c.SendString(seila)
+	id := c.Params("id")
+	res, err := UserController.DeleteUser(id)
+	if err != nil {
+		c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "erro ao excluir usuario",
+		})
+	}
+	user := models.User{
+		Id:      res.Id,
+		Name:    res.Name,
+		Email:   res.Email,
+		Address: res.Address,
+		Card: models.Card{
+			Id:           res.Card.Id,
+			Name:         res.Card.Name,
+			Number:       res.Card.Number,
+			SecurityCode: res.Card.SecurityCode,
+			ValidThru:    res.Card.ValidThru,
+		},
+		Password: res.Password,
+		Role:     res.Role.String(),
+		Cpf:      res.Cpf,
+	}
+	return c.JSON(user)
 }
 
 func SetupRoutes(app *fiber.App) {
+
 	app.Post("/login", login)
 	app.Post("/user", userCreate)
-	app.Delete("/user", userDelete)
 
 	app.Use(jwtware.New(jwtware.Config{
 		SigningKey: []byte("secret"),
 	}))
+	app.Delete("/user", userDelete)
 
 	app.Get("/user", usersAll)
 	app.Get("/user/:id", user)
