@@ -1,20 +1,20 @@
 package models
 
 type User struct {
-	Id       string
-	Name     string
-	Email    string
-	Cpf      string
-	Address  string
-	Card     Card
-	Role     string
-	Password string
-	Token    string
+	Id       string `json:"id"`
+	Name     string `validate:"required" json:"name"`
+	Email    string `validate:"required,email" json:"email"`
+	Cpf      string `validate:"required" json:"cpf"`
+	Address  string `validate:"required" json:"address"`
+	Card     Card   `validate:"dive" json:"card"`
+	Role     string `validate:"required" json:"role"`
+	Password string `validate:"required" json:"password"`
+	Token    string `json:"token"`
 }
 
 type LoginRequest struct {
-	Email    string
-	Password string
+	Email    string `validate:"required"`
+	Password string `validate:"required"`
 }
 
 // string name = 1;

@@ -1,16 +1,19 @@
-package controller
+package repository
 
 import (
 	"context"
 
+	"github.com/vinny1892/ecommerce_api_gateway/config"
 	"github.com/vinny1892/ecommerce_api_gateway/models"
 	pb "github.com/vinny1892/ecommerce_api_gateway/protos"
 
 	"github.com/vinny1892/ecommerce_api_gateway/clientGRPC"
 )
 
+var uri_connection_microservice_user string = config.Environment().GetString("IP_ECOMMERCE_USER") + config.Environment().GetString("GRPC_PORT_ECOMMERCE_USER")
+
 func ListAll() ([]*pb.User, error) {
-	conn, err := clientGRPC.Connect("localhost:50051")
+	conn, err := clientGRPC.Connect(uri_connection_microservice_user)
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +29,7 @@ func ListAll() ([]*pb.User, error) {
 }
 
 func Login(loginRequest *models.LoginRequest) (*pb.LoginResponse, error) {
-	conn, err := clientGRPC.Connect("localhost:50051")
+	conn, err := clientGRPC.Connect(uri_connection_microservice_user)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +44,7 @@ func Login(loginRequest *models.LoginRequest) (*pb.LoginResponse, error) {
 }
 
 func SelectByID(id string) (*pb.User, error) {
-	conn, err := clientGRPC.Connect("localhost:50051")
+	conn, err := clientGRPC.Connect(uri_connection_microservice_user)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +59,7 @@ func SelectByID(id string) (*pb.User, error) {
 }
 
 func DeleteUser(id string) (*pb.User, error) {
-	conn, err := clientGRPC.Connect("localhost:50051")
+	conn, err := clientGRPC.Connect(uri_connection_microservice_user)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +74,7 @@ func DeleteUser(id string) (*pb.User, error) {
 }
 
 func CreateUser(userRequest *models.User) (*pb.User, error) {
-	conn, err := clientGRPC.Connect("localhost:50051")
+	conn, err := clientGRPC.Connect(uri_connection_microservice_user)
 	if err != nil {
 		return nil, err
 	}
