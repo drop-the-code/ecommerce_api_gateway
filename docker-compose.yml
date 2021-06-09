@@ -1,0 +1,70 @@
+version: "3.7"
+services:
+    ecommerce_user_postgres:
+        image: postgres:latest
+        ports:
+            - ${DB_PORT}:${DB_PORT}
+        env_file:
+            - .env
+            - environments/user.env
+        networks:
+            net_postgres:
+                ipv4_address: 172.70.18.4
+    ecommerce_user:
+        image: vinny1892/ecommerce_user
+        depends_on:
+            - ecommerce_user_postgres
+        env_file:
+            - .env
+            - environments/user.env
+        ports:
+            - ${GRPC_PORT_USER}:${GRPC_PORT_USER}
+        networks:
+            net_postgres:
+                ipv4_address: 172.70.18.3
+    ecommerce_api_gateway:
+        build:
+            context: .
+            dockerfile: docker/dockerfile.dev
+        volumes:
+            - .:/opt/app
+        env_file:
+            - .env
+        ports:
+            - ${PORT}:${PORT}
+        networks:
+            net_postgres:
+                ipv4_address: 172.70.18.2
+    ecommerce_cart:
+        image: vinny1892/ecommerce_cart
+        env_file:
+            - .env
+            - environments/cart.env
+        ports:
+            - ${GRPC_PORT_CART}:${GRPC_PORT_CART}
+        networks:
+            net_postgres:
+                ipv4_address: 172.70.18.5
+    ecommerce_cart_mongo:
+        image: vinny1892/ecommerce_mongo_cart
+        env_file:
+            - .env
+            - environments/cart.env
+        ports:
+            - ${MONGO_PORT}:${MONGO_PORT}
+        networks:
+            net_postgres:
+                ipv4_address: 172.70.18.6
+    # ecommerce_product:
+    #     image:
+    #     env_file:
+    #         - ./.env
+    #     ports:
+    #         ${GRPC_PORT_ECOMMERCE_PURCHASE}:${GRPC_PORT_ECOMMERCE_PURCHASE}
+networks:
+    net_postgres:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.70.18.0/24                                                                                                                               
