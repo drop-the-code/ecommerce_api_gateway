@@ -5,7 +5,7 @@ import (
 )
 
 func Connect(uri_connection string) (*grpc.ClientConn, error) {
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(uri_connection, grpc.WithInsecure())
 	if err != nil {
 		return conn, err
 	}

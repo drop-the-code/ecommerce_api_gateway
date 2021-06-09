@@ -118,13 +118,16 @@ func user(c *fiber.Ctx) error {
 
 func userCreate(c *fiber.Ctx) error {
 	user := new(models.User)
+
+	if err := c.BodyParser(user); err != nil {
+		return err
+	}
+
 	errors := models.ValidateStruct(*user)
 	if errors != nil {
 		return c.JSON(errors)
 	}
-	if err := c.BodyParser(user); err != nil {
-		return err
-	}
+
 	res, err := UserRepository.CreateUser(user)
 	if err != nil {
 		fmt.Println(err)

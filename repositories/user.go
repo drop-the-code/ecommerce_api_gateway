@@ -10,7 +10,7 @@ import (
 	"github.com/vinny1892/ecommerce_api_gateway/clientGRPC"
 )
 
-var uri_connection_microservice_user string = config.Environment().GetString("IP_ECOMMERCE_USER") + config.Environment().GetString("GRPC_PORT_ECOMMERCE_USER")
+var uri_connection_microservice_user string = config.Environment().GetString("IP_ECOMMERCE_USER") + ":" + config.Environment().GetString("GRPC_PORT_ECOMMERCE_USER")
 
 func ListAll() ([]*pb.User, error) {
 	conn, err := clientGRPC.Connect(uri_connection_microservice_user)
@@ -82,7 +82,7 @@ func CreateUser(userRequest *models.User) (*pb.User, error) {
 	client := pb.NewUserServiceClient(conn)
 	var role pb.Role = pb.Role_funcionario /* funcionario */
 	if userRequest.Role == "cliente" {
-		role = pb.Role_funcionario /* cliente */
+		role = pb.Role_cliente /* cliente */
 	}
 	request := &pb.UserRequest{
 		User: &pb.User{
