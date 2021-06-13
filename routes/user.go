@@ -135,7 +135,24 @@ func userCreate(c *fiber.Ctx) error {
 			"error": "conexão recusada com o servidor",
 		})
 	}
-	return c.JSON(res)
+	userResp := models.User{
+		Id:      res.Id,
+		Name:    res.Name,
+		Email:   res.Email,
+		Address: res.Address,
+		Card: models.Card{
+			Id:           res.Card.Id,
+			Name:         res.Card.Name,
+			Number:       res.Card.Number,
+			SecurityCode: res.Card.SecurityCode,
+			ValidThru:    res.Card.ValidThru,
+		},
+		Password: res.Password,
+		Role:     res.Role.String(),
+		Cpf:      res.Cpf,
+	}
+
+	return c.JSON(userResp)
 
 }
 

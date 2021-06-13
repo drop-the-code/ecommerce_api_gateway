@@ -14,9 +14,9 @@ func SetupRoutes(app *fiber.App) {
 		SigningKey: []byte("secret"),
 	}))
 
-	app.Delete("/user", userDelete)
+	app.Delete("/user/:id", userDelete)
 
 	app.Get("/user", usersAll)
 	app.Get("/user/:id", user)
-	app.Put("/user", userUpdate)
+	app.Put("/user/:id", userUpdate)
 }
