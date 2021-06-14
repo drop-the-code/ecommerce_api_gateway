@@ -123,7 +123,7 @@ func userCreate(c *fiber.Ctx) error {
 		return err
 	}
 
-	errors := models.ValidateStruct(*user)
+	errors := models.ValidateStructUser(*user)
 	if errors != nil {
 		return c.JSON(errors)
 	}

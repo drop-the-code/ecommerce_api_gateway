@@ -5,7 +5,7 @@ import (
 
 	"github.com/vinny1892/ecommerce_api_gateway/config"
 	"github.com/vinny1892/ecommerce_api_gateway/models"
-	pb "github.com/vinny1892/ecommerce_api_gateway/protos"
+	pb "github.com/vinny1892/ecommerce_api_gateway/protos/user"
 
 	"github.com/vinny1892/ecommerce_api_gateway/clientGRPC"
 )

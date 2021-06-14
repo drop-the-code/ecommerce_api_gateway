@@ -1,0 +1,31 @@
+syntax = "proto3";
+package EcommerceProduct;
+option csharp_namespace = "GrpcService1";
+option go_package = "github.com/vinny1892/ecommerce_api_gateway/protos/product";
+
+
+service ProductCRUD {
+  rpc SelectAll (Empty) returns (Products);
+  rpc SelectByID (ProductID) returns (Product);
+  rpc Insert (Product) returns (Empty);
+  rpc Update (Product) returns (Empty);
+  rpc Delete (ProductID) returns (Empty);
+}
+
+message Empty {}
+
+message Product {
+  int32 productID = 1;
+  string productName = 2;
+  double productPrice = 3;
+  string providerCNPJ = 4;
+  string description = 5;
+}
+
+message Products {
+  repeated Product items = 1;
+}
+
+message ProductID {
+  int32 productID = 1;
+}
