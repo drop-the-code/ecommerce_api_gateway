@@ -16,6 +16,7 @@ func productAll(c *fiber.Ctx) error {
 			"error": "conexão recusada com o servidor",
 		})
 	}
+
 	products := []models.Product{}
 	for _, item := range data {
 		product := models.Product{
