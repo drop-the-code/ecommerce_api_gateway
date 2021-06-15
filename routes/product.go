@@ -35,7 +35,7 @@ func productAll(c *fiber.Ctx) error {
 	// 	}
 	// 	users = append(users, user)
 	// }
-	fmt.Println(data)
+	fmt.Println(err)
 	return c.JSON(data)
 
 }
