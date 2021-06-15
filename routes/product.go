@@ -2,6 +2,7 @@ package routes
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/vinny1892/ecommerce_api_gateway/models"
@@ -15,28 +16,19 @@ func productAll(c *fiber.Ctx) error {
 			"error": "conexão recusada com o servidor",
 		})
 	}
-	// users := []models.User{}
-	// for _, item := range data {
-	// 	user := models.User{
-	// 		Id:      item.Id,
-	// 		Name:    item.Name,
-	// 		Email:   item.Email,
-	// 		Cpf:     item.Cpf,
-	// 		Address: item.Address,
-	// 		Card: models.Card{
-	// 			Id:           item.Card.Id,
-	// 			Name:         item.Card.Name,
-	// 			SecurityCode: item.Card.SecurityCode,
-	// 			ValidThru:    item.Card.ValidThru,
-	// 			Number:       item.Card.Number,
-	// 		},
-	// 		Role:     item.Role.String(),
-	// 		Password: item.Password,
-	// 	}
-	// 	users = append(users, user)
-	// }
-	fmt.Println(data)
-	return c.JSON(data)
+	products := []models.Product{}
+	for _, item := range data {
+		product := models.Product{
+			Id:           item.ProductID,
+			Name:         item.ProductName,
+			Description:  item.Description,
+			Price:        item.ProductPrice,
+			ProviderCnpj: item.ProviderCNPJ,
+		}
+		products = append(products, product)
+	}
+	log.Println("Listando dados ...")
+	return c.JSON(products)
 
 }
 
