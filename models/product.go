@@ -4,7 +4,7 @@ type Product struct {
 	Id           int32   `json:"id"`
 	Name         string  `json:"name" validate:"required"`
 	Price        float64 `json:"price" validate:"required"`
-	ProviderCnpj string  `json:"providerCNPJ" validate:"required"`
+	ProviderCnpj string  `json:"provider_cnpj" validate:"required"`
 	Description  string  `json:"description"`
 }
 
