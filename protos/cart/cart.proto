@@ -1,0 +1,49 @@
+syntax = "proto3"; //protocol buffer 3 language 
+
+package packagePB;
+option go_package = "github.com/vinny1892/ecommerce_api_gateway/protos/cart";
+
+
+message Cart { // MODEL: 3 propriedades, ordenados por 1,2,3,4,5
+  string id = 1;
+  string updatedAt = 2;
+  string clientId = 3;
+  bool status = 4;
+  repeated string productListId = 5;
+}
+
+//mensagem que deve ser recebida
+message CartIdRequest {
+	string id = 1;
+}
+
+message ClientIdRequest {
+	string clientId = 1;
+}
+
+message CartRequest {
+	Cart cart = 1;
+}
+
+message Empty {
+}
+
+//mensagem que deve ser recebida
+message CartResponse {
+  Cart cart = 1;
+}
+
+message CartsResponse {
+  repeated Cart carts = 1;
+}
+
+//metodos
+service cartService {
+  rpc GetAllCarts(Empty) returns (CartsResponse) ;
+  rpc GetCart(CartIdRequest) returns (CartResponse);
+  rpc UpdateAddOneProduct(CartRequest) returns (CartResponse);
+  rpc UpdateStatus(CartRequest) returns (CartResponse);
+  rpc CreateCart(CartRequest) returns (CartResponse);
+  rpc DeleteCart(CartIdRequest) returns (CartResponse);
+  rpc GetCartByClientId(ClientIdRequest) returns (CartResponse);
+}
