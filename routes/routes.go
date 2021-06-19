@@ -20,6 +20,7 @@ func SetupRoutes(app *fiber.App) {
 	app.Get("/user", usersAll)
 	app.Get("/user/:id", user)
 	app.Put("/user/:id", userUpdate)
+	
 	app.Post("/cart", createCart)
 	app.Put("/cart/:id", updateAddOneProduct)
 	app.Put("/cart/status", updateStatus)
