@@ -6,4 +6,4 @@ COPY . .
 
 RUN go build -o ./app
 
-CMD ./app/ecommerce_api_gateway
+CMD ./app
