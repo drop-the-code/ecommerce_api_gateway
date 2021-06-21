@@ -27,20 +27,23 @@ func ListAllProduct() ([]*pb.Product, error) {
 	return res.Items, err
 }
 
-// func SelectByIDProduct(id string) (*pb.User, error) {
-// 	conn, err := clientGRPC.Connect(uri_connection_microservice_user)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer clientGRPC.Close_Connect(conn)
-// 	client := pb.NewUserServiceClient(conn)
-// 	request := &pb.UserID{Id: id}
-// 	res, err := client.SelectById(context.Background(), request)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return res, err
-// }
+func SelectByIDProduct(id int32) (*pb.Product, error) {
+	conn, err := clientGRPC.Connect(uri_connection_microservice_product)
+	if err != nil {
+		return nil, err
+	}
+	defer clientGRPC.Close_Connect(conn)
+	client := pb.NewProductCRUDClient(conn)
+
+	request := &pb.ProductID{
+		ProductID: id,
+	}
+	res, err := client.SelectByID(context.Background(), request)
+	if err != nil {
+		return nil, err
+	}
+	return res, err
+}
 
 func DeleteProduct(id int32) (*pb.Empty, error) {
 	conn, err := clientGRPC.Connect(uri_connection_microservice_product)

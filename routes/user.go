@@ -11,6 +11,13 @@ import (
 	UserRepository "github.com/vinny1892/ecommerce_api_gateway/repositories"
 )
 
+func logout(c *fiber.Ctx) error {
+	c.Locals("user").(*jwt.Token).Valid = false
+	return c.JSON(fiber.Map{
+		"message": "deslogado com sucesso",
+	})
+}
+
 func usersAll(c *fiber.Ctx) error {
 	data, err := UserRepository.ListAll()
 	if err != nil {

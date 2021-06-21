@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/vinny1892/ecommerce_api_gateway/clientGRPC"
 	"github.com/vinny1892/ecommerce_api_gateway/config"
@@ -52,7 +53,8 @@ func GetCart(cartID string) (*pb.CartResponse, error) {
 }
 
 func UpdateAddOneProduct(cartRequest *models.Cart) (*pb.CartResponse, error) {
-
+	log.Println("AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+	log.Println(cartRequest.ProductList[0])
 	conn, err := clientGRPC.Connect(uri_connection_microservice_cart)
 	if err != nil {
 		return nil, err
@@ -61,10 +63,7 @@ func UpdateAddOneProduct(cartRequest *models.Cart) (*pb.CartResponse, error) {
 	client := pb.NewCartServiceClient(conn)
 	request := &pb.CartRequest{
 		Cart: &pb.Cart{
-			Id:            cartRequest.Id,
-			UpdatedAt:     cartRequest.UpdatedAt,
 			ClientId:      cartRequest.ClientId,
-			Status:        cartRequest.Status,
 			ProductListId: cartRequest.ProductList,
 		},
 	}
@@ -77,7 +76,6 @@ func UpdateAddOneProduct(cartRequest *models.Cart) (*pb.CartResponse, error) {
 }
 
 func GetCartByClientId(clientID string) (*pb.CartResponse, error) {
-
 	conn, err := clientGRPC.Connect(uri_connection_microservice_cart)
 	if err != nil {
 		return nil, err

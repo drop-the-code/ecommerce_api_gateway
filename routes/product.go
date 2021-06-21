@@ -96,21 +96,22 @@ func productDelete(c *fiber.Ctx) error {
 
 }
 
-// func productById(c *fiber.Ctx) error {
-// 	id := c.Params("id")
-// 	res, err := ProductRepository.GetCartByClientId(id)
-// 	if err != nil {
-// 		log.Println(err)
-// 		c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-// 			"error": "conexão recusada com o servidor",
-// 		})
-// 	}
-// 	data := models.Cart{
-// 		Id:          res.Cart.Id,
-// 		ClientId:    res.Cart.ClientId,
-// 		UpdatedAt:   res.Cart.UpdatedAt,
-// 		Status:      res.Cart.Status,
-// 		ProductList: res.Cart.ProductListId,
-// 	}
-// 	return c.JSON(data)
-// }
+func productById(c *fiber.Ctx) error {
+	id := c.Params("id")
+	id_int, err := strconv.ParseInt(id, 10, 64)
+	res, err := ProductRepository.SelectByIDProduct(int32(id_int))
+	if err != nil {
+		log.Println(err)
+		c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "conexão recusada com o servidor",
+		})
+	}
+	data := models.Product{
+		Id:           res.ProductID,
+		Name:         res.ProductName,
+		Description:  res.Description,
+		Price:        res.ProductPrice,
+		ProviderCnpj: res.ProviderCNPJ,
+	}
+	return c.JSON(data)
+}

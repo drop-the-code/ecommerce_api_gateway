@@ -1,0 +1,15 @@
+basePath: /
+host: https://api.zamazon.gorillas.ninja
+info:
+  contact:
+    email: kaiomudkt@gmail.compatible
+    name: API Support
+  description: Doc api zamazon
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Zamazon API
+  version: "1.0"
+paths: {}
+swagger: "2.0"

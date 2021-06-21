@@ -25,9 +25,6 @@ message CartRequest {
 	Cart cart = 1;
 }
 
-message Empty {
-}
-
 //mensagem que deve ser recebida
 message CartResponse {
   Cart cart = 1;
@@ -35,6 +32,9 @@ message CartResponse {
 
 message CartsResponse {
   repeated Cart carts = 1;
+}
+
+message Empty {
 }
 
 //metodos
@@ -46,4 +46,5 @@ service cartService {
   rpc CreateCart(CartRequest) returns (CartResponse);
   rpc DeleteCart(CartIdRequest) returns (CartResponse);
   rpc GetCartByClientId(ClientIdRequest) returns (CartResponse);
+  rpc UpdateRemoveOneProduct(CartRequest) returns (CartResponse);
 }
